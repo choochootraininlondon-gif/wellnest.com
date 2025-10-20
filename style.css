@@ -754,4 +754,14 @@ header {
         flex-direction: column;
         gap: 10px;
     }
+
+}
+.no-scroll {
+overflow: hidden !important;
+height: 100vh !important;
+}
+
+
+html, body {
+height: 100%;
 }
