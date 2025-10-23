@@ -427,26 +427,23 @@ header {
 .progress-fill {
     height: 100%;
     border-radius: 4px;
+    transition: width 0.5s ease;
 }
 
 .steps .progress-fill {
     background-color: var(--primary-green);
-    width: 75%;
 }
 
 .water .progress-fill {
     background-color: var(--primary-blue);
-    width: 60%;
 }
 
 .sleep .progress-fill {
     background-color: #9C27B0;
-    width: 85%;
 }
 
 .calories .progress-fill {
     background-color: var(--accent);
-    width: 70%;
 }
 
 /* Activity Section */
@@ -506,6 +503,14 @@ header {
 
 .yoga .activity-icon {
     background-color: #9C27B0;
+}
+
+.swimming .activity-icon {
+    background-color: #00BCD4;
+}
+
+.strength .activity-icon {
+    background-color: #FF9800;
 }
 
 .activity-details {
@@ -682,6 +687,7 @@ header {
     box-shadow: var(--shadow);
     transition: var(--transition);
     overflow: hidden;
+    cursor: pointer;
 }
 
 .video-card:hover {
@@ -780,6 +786,23 @@ header {
 .meal-calories {
     font-weight: 600;
     color: var(--accent);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #757575;
+}
+
+.empty-state i {
+    font-size: 48px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    font-size: 16px;
 }
 
 /* Responsive Design */

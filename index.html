@@ -141,10 +141,10 @@
                             </div>
                         </div>
                         <div>
-                            <div class="metric-value">8,542</div>
+                            <div class="metric-value" id="steps-value">8,542</div>
                             <div class="metric-goal">Goal: 10,000 steps</div>
                             <div class="progress-bar">
-                                <div class="progress-fill"></div>
+                                <div class="progress-fill" id="steps-progress"></div>
                             </div>
                         </div>
                     </div>
@@ -157,10 +157,10 @@
                             </div>
                         </div>
                         <div>
-                            <div class="metric-value">1.8L</div>
+                            <div class="metric-value" id="water-value">1.8L</div>
                             <div class="metric-goal">Goal: 3L</div>
                             <div class="progress-bar">
-                                <div class="progress-fill"></div>
+                                <div class="progress-fill" id="water-progress"></div>
                             </div>
                         </div>
                     </div>
@@ -173,10 +173,10 @@
                             </div>
                         </div>
                         <div>
-                            <div class="metric-value">7h 25m</div>
+                            <div class="metric-value" id="sleep-value">7h 25m</div>
                             <div class="metric-goal">Goal: 8h</div>
                             <div class="progress-bar">
-                                <div class="progress-fill"></div>
+                                <div class="progress-fill" id="sleep-progress"></div>
                             </div>
                         </div>
                     </div>
@@ -189,10 +189,10 @@
                             </div>
                         </div>
                         <div>
-                            <div class="metric-value">1,850</div>
+                            <div class="metric-value" id="calories-value">1,850</div>
                             <div class="metric-goal">Goal: 2,200</div>
                             <div class="progress-bar">
-                                <div class="progress-fill"></div>
+                                <div class="progress-fill" id="calories-progress"></div>
                             </div>
                         </div>
                     </div>
@@ -210,7 +210,7 @@
                         <div class="metric-header">
                             <h3 class="metric-title">Today's Meals</h3>
                         </div>
-                        <div>
+                        <div id="meals-list">
                             <div class="meal-item">
                                 <div><strong>Breakfast</strong>: Oatmeal with berries</div>
                                 <div class="meal-calories">320 cal</div>
@@ -232,83 +232,8 @@
                 </div>
                 
                 <h2 class="section-title">Recent Activities</h2>
-                <div class="activity-cards">
-                    <div class="activity-card walking">
-                        <div class="activity-header">
-                            <div class="activity-icon">
-                                <i class="fas fa-walking"></i>
-                            </div>
-                            <div>
-                                <h3>Morning Walk</h3>
-                                <p>Today, 7:30 AM</p>
-                            </div>
-                        </div>
-                        <p>30 minute walk around the neighborhood</p>
-                        <div class="activity-details">
-                            <div class="activity-stat">
-                                <div class="stat-value">2.1 mi</div>
-                                <div class="stat-label">Distance</div>
-                            </div>
-                            <div class="activity-stat">
-                                <div class="stat-value">3,210</div>
-                                <div class="stat-label">Steps</div>
-                            </div>
-                            <div class="activity-stat">
-                                <div class="stat-value">180</div>
-                                <div class="stat-label">Calories</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="activity-card running">
-                        <div class="activity-header">
-                            <div class="activity-icon">
-                                <i class="fas fa-running"></i>
-                            </div>
-                            <div>
-                                <h3>Evening Run</h3>
-                                <p>Yesterday, 6:15 PM</p>
-                            </div>
-                        </div>
-                        <p>5K run at the park</p>
-                        <div class="activity-details">
-                            <div class="activity-stat">
-                                <div class="stat-value">3.1 mi</div>
-                                <div class="stat-label">Distance</div>
-                            </div>
-                            <div class="activity-stat">
-                                <div class="stat-value">28:15</div>
-                                <div class="stat-label">Time</div>
-                            </div>
-                            <div class="activity-stat">
-                                <div class="stat-value">320</div>
-                                <div class="stat-label">Calories</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="activity-card yoga">
-                        <div class="activity-header">
-                            <div class="activity-icon">
-                                <i class="fas fa-spa"></i>
-                            </div>
-                            <div>
-                                <h3>Yoga Session</h3>
-                                <p>2 days ago, 8:00 AM</p>
-                            </div>
-                        </div>
-                        <p>Morning flow and meditation</p>
-                        <div class="activity-details">
-                            <div class="activity-stat">
-                                <div class="stat-value">45 min</div>
-                                <div class="stat-label">Duration</div>
-                            </div>
-                            <div class="activity-stat">
-                                <div class="stat-value">120</div>
-                                <div class="stat-label">Calories</div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="activity-cards" id="dashboard-activities">
+                    <!-- Activities will be loaded here -->
                 </div>
             </section>
 
@@ -322,17 +247,17 @@
                         <div class="form-group">
                             <label for="activity-type">Activity Type</label>
                             <select id="activity-type">
-                                <option>Walking</option>
-                                <option>Running</option>
-                                <option>Cycling</option>
-                                <option>Swimming</option>
-                                <option>Yoga</option>
-                                <option>Strength Training</option>
+                                <option value="walking">Walking</option>
+                                <option value="running">Running</option>
+                                <option value="cycling">Cycling</option>
+                                <option value="swimming">Swimming</option>
+                                <option value="yoga">Yoga</option>
+                                <option value="strength">Strength Training</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="activity-duration">Duration (minutes)</label>
-                            <input type="number" id="activity-duration" placeholder="e.g., 30">
+                            <input type="number" id="activity-duration" placeholder="e.g., 30" required>
                         </div>
                         <div class="form-group">
                             <label for="activity-distance">Distance (miles)</label>
@@ -340,71 +265,19 @@
                         </div>
                         <div class="form-group">
                             <label for="activity-calories">Calories Burned</label>
-                            <input type="number" id="activity-calories" placeholder="e.g., 250">
+                            <input type="number" id="activity-calories" placeholder="e.g., 250" required>
                         </div>
                         <div class="form-group full-width">
                             <label for="activity-notes">Notes (optional)</label>
                             <textarea id="activity-notes" rows="3" placeholder="How did the activity feel?"></textarea>
                         </div>
                     </div>
-                    <button class="btn btn-primary" id="log-activity-btn">Log Activity</button>
+                    <button type="button" class="btn btn-primary" id="log-activity-btn">Log Activity</button>
                 </div>
                 
                 <h2 class="section-title">Activity History</h2>
-                <div class="activity-cards">
-                    <div class="activity-card walking">
-                        <div class="activity-header">
-                            <div class="activity-icon">
-                                <i class="fas fa-walking"></i>
-                            </div>
-                            <div>
-                                <h3>Morning Walk</h3>
-                                <p>Today, 7:30 AM</p>
-                            </div>
-                        </div>
-                        <p>30 minute walk around the neighborhood</p>
-                        <div class="activity-details">
-                            <div class="activity-stat">
-                                <div class="stat-value">2.1 mi</div>
-                                <div class="stat-label">Distance</div>
-                            </div>
-                            <div class="activity-stat">
-                                <div class="stat-value">3,210</div>
-                                <div class="stat-label">Steps</div>
-                            </div>
-                            <div class="activity-stat">
-                                <div class="stat-value">180</div>
-                                <div class="stat-label">Calories</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="activity-card running">
-                        <div class="activity-header">
-                            <div class="activity-icon">
-                                <i class="fas fa-running"></i>
-                            </div>
-                            <div>
-                                <h3>Evening Run</h3>
-                                <p>Yesterday, 6:15 PM</p>
-                            </div>
-                        </div>
-                        <p>5K run at the park</p>
-                        <div class="activity-details">
-                            <div class="activity-stat">
-                                <div class="stat-value">3.1 mi</div>
-                                <div class="stat-label">Distance</div>
-                            </div>
-                            <div class="activity-stat">
-                                <div class="stat-value">28:15</div>
-                                <div class="stat-label">Time</div>
-                            </div>
-                            <div class="activity-stat">
-                                <div class="stat-value">320</div>
-                                <div class="stat-label">Calories</div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="activity-cards" id="activity-history">
+                    <!-- Activity history will be loaded here -->
                 </div>
             </section>
 
@@ -432,11 +305,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="food-name">Food Item</label>
-                                <input type="text" id="food-name" placeholder="e.g., Grilled Chicken Salad">
+                                <input type="text" id="food-name" placeholder="e.g., Grilled Chicken Salad" required>
                             </div>
                             <div class="form-group">
                                 <label for="calories">Calories</label>
-                                <input type="number" id="calories" placeholder="e.g., 350">
+                                <input type="number" id="calories" placeholder="e.g., 350" required>
                             </div>
                             <div class="form-group">
                                 <label for="protein">Protein (g)</label>
@@ -455,7 +328,7 @@
                                 <textarea id="notes" rows="3" placeholder="Any additional details..."></textarea>
                             </div>
                         </div>
-                        <button class="btn btn-primary">Add Meal</button>
+                        <button type="button" class="btn btn-primary" id="log-meal-btn">Add Meal</button>
                     </div>
                     
                     <div class="tab-content" id="water-tab">
@@ -463,14 +336,14 @@
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="water-amount">Amount (ml)</label>
-                                <input type="number" id="water-amount" placeholder="e.g., 250">
+                                <input type="number" id="water-amount" placeholder="e.g., 250" required>
                             </div>
                             <div class="form-group">
                                 <label for="water-time">Time</label>
-                                <input type="time" id="water-time">
+                                <input type="time" id="water-time" required>
                             </div>
                         </div>
-                        <button class="btn btn-primary">Log Water</button>
+                        <button type="button" class="btn btn-primary" id="log-water-btn">Log Water</button>
                     </div>
                 </div>
                 
@@ -501,11 +374,11 @@
                         </div>
                         <div class="form-group">
                             <label for="exercise-name">Exercise Name</label>
-                            <input type="text" id="exercise-name" placeholder="e.g., Bench Press">
+                            <input type="text" id="exercise-name" placeholder="e.g., Bench Press" required>
                         </div>
                         <div class="form-group">
                             <label for="exercise-duration">Duration (minutes)</label>
-                            <input type="number" id="exercise-duration" placeholder="e.g., 45">
+                            <input type="number" id="exercise-duration" placeholder="e.g., 45" required>
                         </div>
                         <div class="form-group">
                             <label for="exercise-intensity">Intensity</label>
@@ -520,7 +393,7 @@
                             <textarea id="exercise-notes" rows="3" placeholder="How did the exercise feel?"></textarea>
                         </div>
                     </div>
-                    <button class="btn btn-primary">Log Exercise</button>
+                    <button type="button" class="btn btn-primary" id="log-exercise-btn">Log Exercise</button>
                 </div>
 
                 <h2 class="section-title">Workout Demonstrations</h2>
@@ -572,60 +445,8 @@
                 </div>
                 
                 <h2 class="section-title">Exercise History</h2>
-                <div class="exercise-log">
-                    <div class="exercise-card strength">
-                        <div class="exercise-header">
-                            <div class="exercise-icon">
-                                <i class="fas fa-dumbbell"></i>
-                            </div>
-                            <div>
-                                <h3>Upper Body Workout</h3>
-                                <p>Today, 5:30 PM</p>
-                            </div>
-                        </div>
-                        <p>Bench press, shoulder press, and bicep curls</p>
-                        <div class="exercise-details">
-                            <div class="activity-stat">
-                                <div class="stat-value">45 min</div>
-                                <div class="stat-label">Duration</div>
-                            </div>
-                            <div class="activity-stat">
-                                <div class="stat-value">Moderate</div>
-                                <div class="stat-label">Intensity</div>
-                            </div>
-                            <div class="activity-stat">
-                                <div class="stat-value">280</div>
-                                <div class="stat-label">Calories</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="exercise-card cardio">
-                        <div class="exercise-header">
-                            <div class="exercise-icon">
-                                <i class="fas fa-heartbeat"></i>
-                            </div>
-                            <div>
-                                <h3>Treadmill Run</h3>
-                                <p>Yesterday, 7:00 AM</p>
-                            </div>
-                        </div>
-                        <p>Interval training on treadmill</p>
-                        <div class="exercise-details">
-                            <div class="activity-stat">
-                                <div class="stat-value">30 min</div>
-                                <div class="stat-label">Duration</div>
-                            </div>
-                            <div class="activity-stat">
-                                <div class="stat-value">Vigorous</div>
-                                <div class="stat-label">Intensity</div>
-                            </div>
-                            <div class="activity-stat">
-                                <div class="stat-value">320</div>
-                                <div class="stat-label">Calories</div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="exercise-log" id="exercise-history">
+                    <!-- Exercise history will be loaded here -->
                 </div>
             </section>
 
@@ -657,32 +478,8 @@
                 </div>
                 
                 <h2 class="section-title">Achievements</h2>
-                <div class="activity-cards">
-                    <div class="activity-card">
-                        <div class="activity-header">
-                            <div class="activity-icon" style="background-color: #FFD700;">
-                                <i class="fas fa-trophy"></i>
-                            </div>
-                            <div>
-                                <h3>10K Steps Champion</h3>
-                                <p>Completed 7 days in a row</p>
-                            </div>
-                        </div>
-                        <p>You've consistently hit your step goal for a full week!</p>
-                    </div>
-                    
-                    <div class="activity-card">
-                        <div class="activity-header">
-                            <div class="activity-icon" style="background-color: #C0C0C0;">
-                                <i class="fas fa-medal"></i>
-                            </div>
-                            <div>
-                                <h3>Hydration Hero</h3>
-                                <p>5 days of perfect water intake</p>
-                            </div>
-                        </div>
-                        <p>Great job staying hydrated throughout the week!</p>
-                    </div>
+                <div class="activity-cards" id="achievements-list">
+                    <!-- Achievements will be loaded here -->
                 </div>
             </section>
         </main>
