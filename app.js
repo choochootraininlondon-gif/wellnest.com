@@ -3,7 +3,14 @@
 class WellNestApp {
     constructor() {
         this.currentUser = null;
-        this.userData = {
+        // Default data for demo purposes - will be overridden for new users
+        this.userData = this.getDefaultUserData();
+        this.init();
+    }
+
+    // Method to get default user data structure
+    getDefaultUserData() {
+        return {
             activities: [],
             meals: [],
             waterLogs: [],
@@ -15,7 +22,7 @@ class WellNestApp {
                     target: 10000,
                     period: 'daily',
                     description: 'Daily step goal',
-                    progress: 8542,
+                    progress: 0, // Start at 0 for new users
                     createdAt: new Date().toISOString(),
                     completed: false
                 },
@@ -25,7 +32,7 @@ class WellNestApp {
                     target: 3,
                     period: 'daily',
                     description: 'Daily water intake',
-                    progress: 1.8,
+                    progress: 0, // Start at 0 for new users
                     createdAt: new Date().toISOString(),
                     completed: false
                 },
@@ -35,7 +42,7 @@ class WellNestApp {
                     target: 8,
                     period: 'daily',
                     description: 'Daily sleep goal',
-                    progress: 7.42,
+                    progress: 0, // Start at 0 for new users
                     createdAt: new Date().toISOString(),
                     completed: false
                 },
@@ -45,19 +52,76 @@ class WellNestApp {
                     target: 2200,
                     period: 'daily',
                     description: 'Daily calorie intake',
-                    progress: 1850,
+                    progress: 0, // Start at 0 for new users
                     createdAt: new Date().toISOString(),
                     completed: false
                 }
             ],
             metrics: {
-                steps: 8542,
-                water: 1.8,
-                sleep: 7.42,
-                calories: 1850
+                steps: 0, // Start at 0 for new users
+                water: 0, // Start at 0 for new users
+                sleep: 0, // Start at 0 for new users
+                calories: 0  // Start at 0 for new users
             }
         };
-        this.init();
+    }
+
+    // Method to get empty user data for brand new users
+    getEmptyUserData() {
+        return {
+            activities: [],
+            meals: [],
+            waterLogs: [],
+            exercises: [],
+            goals: [
+                {
+                    id: 1,
+                    type: 'steps',
+                    target: 10000,
+                    period: 'daily',
+                    description: 'Daily step goal',
+                    progress: 0,
+                    createdAt: new Date().toISOString(),
+                    completed: false
+                },
+                {
+                    id: 2,
+                    type: 'water',
+                    target: 3,
+                    period: 'daily',
+                    description: 'Daily water intake',
+                    progress: 0,
+                    createdAt: new Date().toISOString(),
+                    completed: false
+                },
+                {
+                    id: 3,
+                    type: 'sleep',
+                    target: 8,
+                    period: 'daily',
+                    description: 'Daily sleep goal',
+                    progress: 0,
+                    createdAt: new Date().toISOString(),
+                    completed: false
+                },
+                {
+                    id: 4,
+                    type: 'calories',
+                    target: 2200,
+                    period: 'daily',
+                    description: 'Daily calorie intake',
+                    progress: 0,
+                    createdAt: new Date().toISOString(),
+                    completed: false
+                }
+            ],
+            metrics: {
+                steps: 0,
+                water: 0,
+                sleep: 0,
+                calories: 0
+            }
+        };
     }
 
     init() {
@@ -72,7 +136,7 @@ class WellNestApp {
     bindEvents() {
         console.log('Binding events...');
         
-        // Login/Signup form toggling - FIXED: Better event delegation
+        // Login/Signup form toggling
         document.addEventListener('click', (e) => {
             if (e.target.id === 'show-signup') {
                 e.preventDefault();
@@ -84,7 +148,7 @@ class WellNestApp {
             }
         });
 
-        // Login form submission - FIXED: Direct button click handling
+        // Login form submission
         const loginForm = document.getElementById('login-form');
         const loginButton = loginForm?.querySelector('button[type="submit"]');
         if (loginButton) {
@@ -95,7 +159,7 @@ class WellNestApp {
             });
         }
 
-        // Signup form submission - FIXED: Direct button click handling
+        // Signup form submission
         const signupForm = document.getElementById('signup-form');
         const signupButton = signupForm?.querySelector('button[type="submit"]');
         if (signupButton) {
@@ -242,15 +306,35 @@ class WellNestApp {
         setTimeout(() => {
             console.log('Processing login...');
             
-            // For demo purposes, create user data
-            this.currentUser = {
-                name: email.split('@')[0], // Use email prefix as name for demo
-                email: email,
-                initials: email.substring(0, 2).toUpperCase()
-            };
+            // Check if user exists in storage
+            const userKey = `wellnest_user_${email}`;
+            const userDataKey = `wellnest_data_${email}`;
             
-            // Save to localStorage
-            localStorage.setItem('wellnest_user', JSON.stringify(this.currentUser));
+            const savedUser = localStorage.getItem(userKey);
+            const savedData = localStorage.getItem(userDataKey);
+            
+            if (savedUser && savedData) {
+                // Existing user - load their data
+                console.log('Existing user found, loading data...');
+                this.currentUser = JSON.parse(savedUser);
+                this.userData = JSON.parse(savedData);
+            } else {
+                // New user - create fresh account with empty data
+                console.log('New user, creating fresh account...');
+                this.currentUser = {
+                    name: email.split('@')[0], // Use email prefix as name for demo
+                    email: email,
+                    initials: email.substring(0, 2).toUpperCase()
+                };
+                this.userData = this.getEmptyUserData(); // Use empty data for new users
+                
+                // Save new user data
+                localStorage.setItem(userKey, JSON.stringify(this.currentUser));
+                localStorage.setItem(userDataKey, JSON.stringify(this.userData));
+            }
+            
+            // Save current session
+            localStorage.setItem('wellnest_current_user', email);
             
             if (rememberMe) {
                 localStorage.setItem('wellnest_login_email', email);
@@ -259,6 +343,7 @@ class WellNestApp {
             }
             
             console.log('Login successful, user:', this.currentUser);
+            console.log('User data:', this.userData);
             this.loadUserData();
             this.showApp();
             this.showNotification('Welcome back!', 'success');
@@ -306,6 +391,16 @@ class WellNestApp {
         // Simulate API call with timeout
         setTimeout(() => {
             console.log('Processing signup...');
+            
+            // Check if user already exists
+            const userKey = `wellnest_user_${email}`;
+            const userDataKey = `wellnest_data_${email}`;
+            
+            if (localStorage.getItem(userKey)) {
+                this.showNotification('User already exists with this email', 'error');
+                return;
+            }
+            
             const initials = fullname.split(' ').map(n => n[0]).join('').toUpperCase();
             
             this.currentUser = {
@@ -314,11 +409,17 @@ class WellNestApp {
                 initials: initials
             };
             
-            // Save to localStorage
-            localStorage.setItem('wellnest_user', JSON.stringify(this.currentUser));
+            // Use empty data for new users
+            this.userData = this.getEmptyUserData();
+            
+            // Save to localStorage with email-specific keys
+            localStorage.setItem(userKey, JSON.stringify(this.currentUser));
+            localStorage.setItem(userDataKey, JSON.stringify(this.userData));
+            localStorage.setItem('wellnest_current_user', email);
             localStorage.setItem('wellnest_login_email', email);
             
             console.log('Signup successful, user:', this.currentUser);
+            console.log('User data (should be empty):', this.userData);
             this.loadUserData();
             this.showApp();
             this.showNotification('Account created successfully!', 'success');
@@ -328,57 +429,60 @@ class WellNestApp {
     handleLogout() {
         console.log('Logging out...');
         this.currentUser = null;
-        localStorage.removeItem('wellnest_user');
-        localStorage.removeItem('wellnest_data');
+        this.userData = this.getDefaultUserData(); // Reset to default for demo
+        localStorage.removeItem('wellnest_current_user');
         this.showLogin();
         this.showNotification('Logged out successfully', 'info');
     }
 
     checkAuthStatus() {
         console.log('Checking auth status...');
-        const savedUser = localStorage.getItem('wellnest_user');
+        const currentUserEmail = localStorage.getItem('wellnest_current_user');
         const savedEmail = localStorage.getItem('wellnest_login_email');
         
-        console.log('Saved user:', savedUser);
+        console.log('Current user email:', currentUserEmail);
         console.log('Saved email:', savedEmail);
         
-        if (savedUser) {
-            try {
-                this.currentUser = JSON.parse(savedUser);
-                console.log('User found:', this.currentUser);
-                
-                // Pre-fill email if remembered
-                if (savedEmail && document.getElementById('email')) {
-                    document.getElementById('email').value = savedEmail;
-                    if (document.getElementById('remember-me')) {
-                        document.getElementById('remember-me').checked = true;
+        if (currentUserEmail) {
+            const userKey = `wellnest_user_${currentUserEmail}`;
+            const userDataKey = `wellnest_data_${currentUserEmail}`;
+            
+            const savedUser = localStorage.getItem(userKey);
+            const savedData = localStorage.getItem(userDataKey);
+            
+            if (savedUser && savedData) {
+                try {
+                    this.currentUser = JSON.parse(savedUser);
+                    this.userData = JSON.parse(savedData);
+                    console.log('User found:', this.currentUser);
+                    console.log('User data loaded:', this.userData);
+                    
+                    // Pre-fill email if remembered
+                    if (savedEmail && document.getElementById('email')) {
+                        document.getElementById('email').value = savedEmail;
+                        if (document.getElementById('remember-me')) {
+                            document.getElementById('remember-me').checked = true;
+                        }
                     }
+                    
+                    this.showApp();
+                } catch (error) {
+                    console.error('Error parsing saved user:', error);
+                    this.showLogin();
                 }
-                
-                this.showApp();
-            } catch (error) {
-                console.error('Error parsing saved user:', error);
+            } else {
+                console.log('User data not found, showing login');
                 this.showLogin();
             }
         } else {
-            console.log('No saved user, showing login');
+            console.log('No current user, showing login');
             this.showLogin();
         }
     }
 
     loadUserData() {
         console.log('Loading user data...');
-        const savedData = localStorage.getItem('wellnest_data');
-        if (savedData) {
-            try {
-                this.userData = JSON.parse(savedData);
-                console.log('User data loaded:', this.userData);
-            } catch (error) {
-                console.error('Error parsing user data:', error);
-            }
-        } else {
-            console.log('No saved user data, using defaults');
-        }
+        // Data is already loaded in checkAuthStatus or login/signup handlers
         this.updateDashboard();
         this.updateActivityHistory();
         this.updateExerciseHistory();
@@ -388,7 +492,11 @@ class WellNestApp {
 
     saveUserData() {
         console.log('Saving user data...');
-        localStorage.setItem('wellnest_data', JSON.stringify(this.userData));
+        if (this.currentUser) {
+            const userDataKey = `wellnest_data_${this.currentUser.email}`;
+            localStorage.setItem(userDataKey, JSON.stringify(this.userData));
+            console.log('User data saved for:', this.currentUser.email);
+        }
     }
 
     showLogin() {
@@ -469,6 +577,9 @@ class WellNestApp {
             this.updateGoalsList();
         }
     }
+
+    // ... rest of the methods remain the same (switchTab, logActivity, logMeal, etc.)
+    // Only the data initialization parts have changed
 
     switchTab(tabId, tabElement) {
         const tabs = tabElement.parentElement.querySelectorAll('.tab');
