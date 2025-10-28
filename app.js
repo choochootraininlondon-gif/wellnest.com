@@ -22,7 +22,7 @@ class WellNestApp {
                     target: 10000,
                     period: 'daily',
                     description: 'Daily step goal',
-                    progress: 0, // Start at 0 for new users
+                    progress: 0,
                     createdAt: new Date().toISOString(),
                     completed: false
                 },
@@ -32,7 +32,7 @@ class WellNestApp {
                     target: 3,
                     period: 'daily',
                     description: 'Daily water intake',
-                    progress: 0, // Start at 0 for new users
+                    progress: 0,
                     createdAt: new Date().toISOString(),
                     completed: false
                 },
@@ -42,7 +42,7 @@ class WellNestApp {
                     target: 8,
                     period: 'daily',
                     description: 'Daily sleep goal',
-                    progress: 0, // Start at 0 for new users
+                    progress: 0,
                     createdAt: new Date().toISOString(),
                     completed: false
                 },
@@ -52,16 +52,16 @@ class WellNestApp {
                     target: 2200,
                     period: 'daily',
                     description: 'Daily calorie intake',
-                    progress: 0, // Start at 0 for new users
+                    progress: 0,
                     createdAt: new Date().toISOString(),
                     completed: false
                 }
             ],
             metrics: {
-                steps: 0, // Start at 0 for new users
-                water: 0, // Start at 0 for new users
-                sleep: 0, // Start at 0 for new users
-                calories: 0  // Start at 0 for new users
+                steps: 0,
+                water: 0,
+                sleep: 0,
+                calories: 0
             }
         };
     }
@@ -300,38 +300,27 @@ class WellNestApp {
             return;
         }
 
+        // Check if user exists
+        const userKey = `wellnest_user_${email}`;
+        const userDataKey = `wellnest_data_${email}`;
+        
+        const savedUser = localStorage.getItem(userKey);
+        const savedData = localStorage.getItem(userDataKey);
+        
+        if (!savedUser || !savedData) {
+            this.showNotification('No account found with this email. Please sign up first.', 'error');
+            return;
+        }
+
         this.showNotification('Signing in...', 'info');
         
         // Simulate API call with timeout
         setTimeout(() => {
             console.log('Processing login...');
             
-            // Check if user exists in storage
-            const userKey = `wellnest_user_${email}`;
-            const userDataKey = `wellnest_data_${email}`;
-            
-            const savedUser = localStorage.getItem(userKey);
-            const savedData = localStorage.getItem(userDataKey);
-            
-            if (savedUser && savedData) {
-                // Existing user - load their data
-                console.log('Existing user found, loading data...');
-                this.currentUser = JSON.parse(savedUser);
-                this.userData = JSON.parse(savedData);
-            } else {
-                // New user - create fresh account with empty data
-                console.log('New user, creating fresh account...');
-                this.currentUser = {
-                    name: email.split('@')[0], // Use email prefix as name for demo
-                    email: email,
-                    initials: email.substring(0, 2).toUpperCase()
-                };
-                this.userData = this.getEmptyUserData(); // Use empty data for new users
-                
-                // Save new user data
-                localStorage.setItem(userKey, JSON.stringify(this.currentUser));
-                localStorage.setItem(userDataKey, JSON.stringify(this.userData));
-            }
+            // Load existing user data
+            this.currentUser = JSON.parse(savedUser);
+            this.userData = JSON.parse(savedData);
             
             // Save current session
             localStorage.setItem('wellnest_current_user', email);
@@ -386,20 +375,18 @@ class WellNestApp {
             return;
         }
 
+        // Check if user already exists
+        const userKey = `wellnest_user_${email}`;
+        if (localStorage.getItem(userKey)) {
+            this.showNotification('User already exists with this email', 'error');
+            return;
+        }
+
         this.showNotification('Creating your account...', 'info');
         
         // Simulate API call with timeout
         setTimeout(() => {
             console.log('Processing signup...');
-            
-            // Check if user already exists
-            const userKey = `wellnest_user_${email}`;
-            const userDataKey = `wellnest_data_${email}`;
-            
-            if (localStorage.getItem(userKey)) {
-                this.showNotification('User already exists with this email', 'error');
-                return;
-            }
             
             const initials = fullname.split(' ').map(n => n[0]).join('').toUpperCase();
             
@@ -414,7 +401,7 @@ class WellNestApp {
             
             // Save to localStorage with email-specific keys
             localStorage.setItem(userKey, JSON.stringify(this.currentUser));
-            localStorage.setItem(userDataKey, JSON.stringify(this.userData));
+            localStorage.setItem(`wellnest_data_${email}`, JSON.stringify(this.userData));
             localStorage.setItem('wellnest_current_user', email);
             localStorage.setItem('wellnest_login_email', email);
             
@@ -472,6 +459,7 @@ class WellNestApp {
                 }
             } else {
                 console.log('User data not found, showing login');
+                localStorage.removeItem('wellnest_current_user'); // Clear invalid session
                 this.showLogin();
             }
         } else {
@@ -577,9 +565,6 @@ class WellNestApp {
             this.updateGoalsList();
         }
     }
-
-    // ... rest of the methods remain the same (switchTab, logActivity, logMeal, etc.)
-    // Only the data initialization parts have changed
 
     switchTab(tabId, tabElement) {
         const tabs = tabElement.parentElement.querySelectorAll('.tab');
@@ -1013,7 +998,24 @@ class WellNestApp {
         }
 
         container.innerHTML = goals.map(goal => {
-            const progressPercent = Math.min((goal.progress / goal.target) * 100, 100);
+            // Calculate progress percentage - FIXED: Handle division by zero
+            let progressPercent = 0;
+            if (goal.target > 0) {
+                progressPercent = Math.min((goal.progress / goal.target) * 100, 100);
+            }
+            
+            // Format progress based on goal type
+            let progressDisplay = goal.progress;
+            let targetDisplay = goal.target;
+            
+            if (goal.type === 'water') {
+                progressDisplay = goal.progress.toFixed(1);
+                targetDisplay = goal.target.toFixed(1);
+            } else if (goal.type === 'sleep') {
+                progressDisplay = this.formatSleepTime(goal.progress);
+                targetDisplay = this.formatSleepTime(goal.target);
+            }
+            
             return `
             <div class="goal-card">
                 <div class="goal-header">
@@ -1023,7 +1025,7 @@ class WellNestApp {
                 <p class="goal-description">${goal.description || 'No description provided'}</p>
                 <div class="goal-progress">
                     <div class="goal-stats">
-                        <span>Progress: ${goal.progress} / ${goal.target}</span>
+                        <span>Progress: ${progressDisplay} / ${targetDisplay} ${this.getGoalUnit(goal.type)}</span>
                         <span>${Math.round(progressPercent)}%</span>
                     </div>
                     <div class="progress-bar">
@@ -1036,6 +1038,18 @@ class WellNestApp {
                 </div>
             </div>
         `}).join('');
+    }
+
+    // Helper method to get unit for goal type
+    getGoalUnit(type) {
+        const units = {
+            steps: 'steps',
+            water: 'L',
+            sleep: '',
+            calories: 'cal',
+            exercise: 'min'
+        };
+        return units[type] || '';
     }
 
     checkGoalProgress() {
